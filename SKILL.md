@@ -1,0 +1,177 @@
+---
+name: day1-health
+description: |
+  Access your personal fitness and health data from the Day 1 app via API.
+  Use when the user asks about their workouts, nutrition, body composition,
+  recovery, sleep, HRV, readiness, or wants personalized fitness advice
+  based on their actual tracked data.
+triggers: fitness, workout, training, nutrition, calories, protein, weight,
+  body fat, recovery, readiness, sleep, HRV, heart rate, health data, Day 1,
+  how was my week, should I train today, am I recovering, training volume,
+  muscle gain, fat loss, diet compliance
+---
+
+# Day 1 Personal Health API
+
+Access your real fitness and health data tracked by the Day 1 iOS app.
+This gives you personalized insights based on actual training, nutrition,
+body metrics, sleep, and recovery data.
+
+## Setup
+
+1. Get your API key at the Day 1 Developer Portal: https://othersstudio.tech/me/developer
+2. Set it as an environment variable:
+
+```
+DAY1_API_KEY=d1_sk_your_key_here
+```
+
+## How to Use
+
+### Get Health Snapshot (Primary Endpoint)
+
+This is the most useful endpoint — it returns everything in one call.
+
+```bash
+curl -X GET "https://ywliqhbjyiydlnahvwal.supabase.co/functions/v1/health-snapshot?days=7" \
+  -H "Authorization: Bearer $DAY1_API_KEY"
+```
+
+Parameters:
+- `days` (optional, default 7, max 30): How many days of history to include
+
+### Response Structure
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "snapshot_date": "2026-05-30",
+    "days_range": 7,
+    "profile": {
+      "goal": "muscle_gain",
+      "training_level": "intermediate",
+      "days_per_week": 4,
+      "weight_kg": 74.5,
+      "height_cm": 178,
+      "age": 19,
+      "gender": "male"
+    },
+    "training": {
+      "sessions_completed": 3,
+      "avg_duration_min": 52,
+      "total_calories": 1240,
+      "avg_rpe": 7.5,
+      "avg_heart_rate": 135
+    },
+    "nutrition": {
+      "avg_daily_calories": 2380,
+      "avg_protein_g": 145.2,
+      "avg_carbs_g": 280.0,
+      "avg_fat_g": 72.5,
+      "days_logged": 5
+    },
+    "body": {
+      "latest_weight_kg": 74.5,
+      "weight_change_kg": -0.3,
+      "latest_body_fat_pct": 14.2
+    },
+    "recovery": {
+      "avg_energy": 7.2,
+      "avg_soreness": 3.8,
+      "avg_stress": 4.1,
+      "days_reported": 6
+    },
+    "sleep": {
+      "avg_duration_min": 420,
+      "avg_quality_score": 7.5,
+      "days_tracked": 7
+    },
+    "activity": {
+      "avg_daily_steps": 8500,
+      "avg_active_calories": 320,
+      "avg_exercise_minutes": 45
+    },
+    "hrv": {
+      "avg_hrv_ms": 52.3,
+      "latest_hrv_ms": 55.0,
+      "days_tracked": 7
+    },
+    "resting_heart_rate": {
+      "avg_rhr": 58,
+      "latest_rhr": 56,
+      "days_tracked": 7
+    }
+  },
+  "meta": {
+    "requests_remaining": 997,
+    "days_queried": 7
+  }
+}
+```
+
+## How to Interpret the Data
+
+### Readiness Assessment
+
+Based on recovery data, calculate readiness:
+- Energy 8-10 + Soreness 1-3 + Stress 1-3 = GREEN (push hard)
+- Energy 6-7 + Soreness 4-5 + Stress 4-5 = YELLOW (normal training)
+- Energy 4-5 + Soreness 6-7 + Stress 6-7 = ORANGE (reduce 20%)
+- Energy 1-3 OR Soreness 8+ OR Stress 8+ = RED (rest day)
+
+### Training Load Assessment
+
+- Sessions vs target (days_per_week): compliance rate
+- RPE trend: if consistently 9-10, may be overtraining
+- Duration: unusually short sessions may indicate fatigue
+
+### Nutrition Assessment
+
+- Protein target for muscle gain: ~2g per kg bodyweight
+- Caloric needs estimate: bodyweight_kg * 33 (moderate activity)
+- Days logged < 5/7 = poor compliance, note this to user
+
+### HRV Interpretation
+
+- HRV trending up = good recovery, can train harder
+- HRV drop >15% from average = potential overtraining or illness
+- Compare to personal baseline, not population norms
+
+### Body Composition
+
+- Weight change > 0.5kg/week gain → probably gaining fat too fast
+- Weight change > 1kg/week loss → probably losing muscle
+- Stable weight + dropping body fat = ideal recomposition
+
+## Response Guidelines
+
+When presenting data to the user:
+
+1. **Contextualize**: "You completed 3 of your 4 planned sessions this week"
+2. **Compare**: "Your protein is at 73% of the recommended 2g/kg target"
+3. **Trend**: "Sleep quality has improved 12% compared to last week"
+4. **Actionable**: "Based on your high soreness (7/10), consider a lighter session today"
+5. **Honest**: If data shows poor compliance, mention it constructively
+6. **Privacy**: Only share data the user explicitly asks about
+
+## Error Handling
+
+| Status | Meaning | Action |
+|--------|---------|--------|
+| 401 | Invalid or missing API key | Check DAY1_API_KEY is set correctly |
+| 429 | Monthly limit reached | Wait for month reset |
+| 500 | Server error | Retry once, then inform user |
+
+## Rate Limits
+
+- Free tier: 1,000 requests per month
+- Pro tier: 10,000 requests per month
+- Per-minute: max 10 requests
+
+## Notes
+
+- Data comes from user's iOS app (synced to cloud)
+- Some fields may be null if user hasn't tracked that metric
+- Sleep/HRV data requires Apple Watch
+- All timestamps are in user's local timezone
