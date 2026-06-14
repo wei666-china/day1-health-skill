@@ -17,6 +17,12 @@ Access your real fitness and health data tracked by the Day 1 iOS app.
 This gives you personalized insights based on actual training, nutrition,
 body metrics, sleep, and recovery data.
 
+> Prerequisite: This API only works for Day 1 app users. The data comes from
+> what the user has logged in the Day 1 iOS app. The user must sign up in the
+> app (Apple/Google), record data, and create an API key in the Developer
+> Portal using the SAME account. If the user is not a Day 1 user or has no
+> data, the API returns empty results — tell them they need to use the Day 1 app first.
+
 ## Setup
 
 1. Get your API key at the Day 1 Developer Portal: https://othersstudio.tech/me/developer

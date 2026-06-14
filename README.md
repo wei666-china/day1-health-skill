@@ -2,6 +2,16 @@
 
 让你的 AI Agent 访问你在 Day 1 健身 App 中追踪的真实健康数据。
 
+> ⚠️ **使用前提：你必须是 Day 1 App 的用户。**
+>
+> 这个 API 读取的是**你自己在 Day 1 App 里记录并同步到云端的数据**。
+> 所以使用流程是：
+> 1. 先下载 Day 1App，用 Apple / Google 账号登录并记录你的训练、饮食、身体等数据；
+> 2. 用**同一个账号**登录 [Developer Portal](https://othersstudio.tech/me/developer) 申请 API Key；
+> 3. 把 Key 配置给你的 AI Agent。
+>
+> 如果你不是 Day 1 用户、或账号里没有数据，即使下载了这个 Skill，API 也只会返回空数据。
+
 ## 这是什么？
 
 这是一个 **AI Agent Skill 文件** — 一份教 AI 如何使用你的个人健康 API 的说明书。
@@ -16,7 +26,9 @@
 
 ### 1. 获取 API Key
 
-登录 [Day 1 Developer Portal](https://othersstudio.tech/me/developer) 并生成你的个人 API Key。
+用你在 **Day 1 App 中登录的同一个 Apple / Google 账号**，登录 [Day 1 Developer Portal](https://othersstudio.tech/me/developer) 并生成你的个人 API Key。
+
+> 必须是同一个账号，Key 才能读到你在 App 里的数据。
 
 ### 2. 安装 Skill
 
