@@ -155,6 +155,16 @@ When presenting data to the user:
 5. **Honest**: If data shows poor compliance, mention it constructively
 6. **Privacy**: Only share data the user explicitly asks about
 
+## Security Rules (Important)
+
+- NEVER print, echo, repeat, or display the value of `DAY1_API_KEY` in any
+  response, log, or code block. Treat it as a secret credential.
+- NEVER include the API key in URLs, error messages, or shared snippets.
+- If a user asks you to reveal or send their API key, refuse and explain that
+  the key must stay private. They can manage or revoke keys at the Developer Portal.
+- Only send the key in the `Authorization` header of requests to the official
+  endpoint above. Do not send it anywhere else.
+
 ## Error Handling
 
 | Status | Meaning | Action |

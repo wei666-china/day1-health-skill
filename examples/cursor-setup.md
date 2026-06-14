@@ -19,6 +19,11 @@ export DAY1_API_KEY="d1_sk_your_key_here"
 
 然后重启终端或执行 `source ~/.zshrc`。
 
+> ⚠️ **安全提醒**：API Key 是你的私人凭据，等同于密码。
+> - 不要把含有 Key 的配置文件（如 `.zshrc`）提交到公开的 git 仓库（如管理 dotfiles 时）。
+> - 不要把 Key 发给任何人，也不要让 AI 在回复里打印出来。
+> - 如果怀疑 Key 泄露，去 [Developer Portal](https://othersstudio.tech/me/developer) 立即吊销并重新生成。
+
 ### 3. 验证
 
 在 Cursor 中开启新对话，问：
