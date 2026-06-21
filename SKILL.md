@@ -166,6 +166,22 @@ this keeps requests low and answers focused. The `exercises[].sets` field in
 `/workouts` is raw JSON straight from the app (sets, weight, reps); parse it to
 reason about progressive overload.
 
+**Semantics & windows — read this to avoid contradicting yourself**
+
+The snapshot and the detail endpoints use *different time windows and
+aggregation styles*. Do NOT directly compare a snapshot average against a single
+day from a detail endpoint and call it a contradiction.
+
+| Data | `health-snapshot` (overview) | Detail endpoint |
+|------|------------------------------|-----------------|
+| Weight | `body.latest_weight_kg` = newest record all-time; `weight_change_kg` over the snapshot window (default 7d) | `/body` returns a full `weight_series` (date-ascending, default 90d). The newest point of the series may differ from snapshot if the latest record is outside the series window. |
+| Nutrition | window average (default 7d) | `/nutrition` window average (default 14d) + per-day breakdown. Different default windows → different averages; that's expected. |
+| Recovery | window average of energy/soreness/stress (default 7d) | `/recovery` returns raw per-day rows (default 14d), no pre-averaging — average them yourself if comparing. |
+| Insights | not in snapshot | `/insights` adds `consecutive_week_streak` (number of consecutive calendar weeks, Mon-anchored, ending at the most recent trained week — so it does NOT reset just because the current week has no session yet). |
+
+When a user asks "is this right?", prefer the endpoint whose window matches the
+question, and state the window you used (e.g. "over the last 14 days...").
+
 ## How to Interpret the Data
 
 ### Readiness Assessment
