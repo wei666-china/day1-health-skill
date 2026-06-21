@@ -116,6 +116,56 @@ Parameters:
 }
 ```
 
+### Detailed Endpoints (Coach-Level Data)
+
+The snapshot above is a fast overview. When the user wants **deeper, set-by-set
+or day-by-day** analysis, call these focused endpoints. They share the same auth
+header, base URL, rate limits, and `{ status, data, meta }` response shape.
+
+| Endpoint | Purpose | When to call |
+|----------|---------|-------------|
+| `/functions/v1/workouts` | Every session with per-exercise sets / weight / reps | "How is my bench progressing?", "Show my last workout", "Am I doing progressive overload?" |
+| `/functions/v1/nutrition` | Daily macros vs goals + compliance | "Did I hit my protein this week?", "How's my diet adherence?" |
+| `/functions/v1/body` | Weight & body-fat time series + goal plan | "Plot my weight trend", "Am I on track for my goal?" |
+| `/functions/v1/recovery` | Daily subjective status, check-ins, pre/post-workout | "How's my recovery trending?", "Should I deload?" |
+| `/functions/v1/insights` | Training frequency, volume trend, consistency | "How consistent have I been?", "What's my weekly average?" |
+
+```bash
+# Workout detail — last 30 days, up to 20 sessions
+curl -X GET "https://ywliqhbjyiydlnahvwal.supabase.co/functions/v1/workouts?days=30&limit=20" \
+  -H "Authorization: Bearer $DAY1_API_KEY"
+
+# Nutrition detail — last 14 days vs targets
+curl -X GET "https://ywliqhbjyiydlnahvwal.supabase.co/functions/v1/nutrition?days=14" \
+  -H "Authorization: Bearer $DAY1_API_KEY"
+
+# Body trend — last 90 days
+curl -X GET "https://ywliqhbjyiydlnahvwal.supabase.co/functions/v1/body?days=90" \
+  -H "Authorization: Bearer $DAY1_API_KEY"
+
+# Recovery detail — last 14 days
+curl -X GET "https://ywliqhbjyiydlnahvwal.supabase.co/functions/v1/recovery?days=14" \
+  -H "Authorization: Bearer $DAY1_API_KEY"
+
+# Insights — all-time + recent trends (no params)
+curl -X GET "https://ywliqhbjyiydlnahvwal.supabase.co/functions/v1/insights" \
+  -H "Authorization: Bearer $DAY1_API_KEY"
+```
+
+**Parameters**
+
+- `workouts`: `days` (1–90, default 30), `limit` (1–50 sessions, default 20)
+- `nutrition`: `days` (1–60, default 14)
+- `body`: `days` (1–365, default 90)
+- `recovery`: `days` (1–60, default 14)
+- `insights`: none
+
+**Strategy for the agent**: start with `health-snapshot` for the big picture.
+Only call a detailed endpoint when the user's question needs that granularity —
+this keeps requests low and answers focused. The `exercises[].sets` field in
+`/workouts` is raw JSON straight from the app (sets, weight, reps); parse it to
+reason about progressive overload.
+
 ## How to Interpret the Data
 
 ### Readiness Assessment
