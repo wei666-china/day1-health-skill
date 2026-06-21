@@ -59,20 +59,28 @@ export DAY1_API_KEY="d1_sk_your_key_here"
 
 ## 支持的 AI Agent 平台
 
-| 平台 | Skill 目录 |
-|------|-----------|
-| Cursor IDE | `~/.cursor/skills/day1-health/` |
-| Claude Code | `~/.claude/skills/day1-health/` |
-| Codex CLI | `~/.codex/skills/day1-health/` |
-| 自定义 Agent | 将 SKILL.md 内容加入 system prompt |
+每个平台都有专门的分步接入指南，点击查看：
+
+| 平台 | 接入方式 | 指南 |
+|------|---------|------|
+| Cursor IDE | `.cursor/skills/` + 环境变量 | [cursor-setup.md](examples/cursor-setup.md) |
+| Claude Code | `.claude/skills/` 或 `CLAUDE.md` | [claude-code-setup.md](examples/claude-code-setup.md) |
+| Codex CLI | `AGENTS.md` + 环境变量 | [codex-setup.md](examples/codex-setup.md) |
+| OpenClaw | `openclaw skills install git:...` | [openclaw-setup.md](examples/openclaw-setup.md) |
+| 其他任意 Agent | 带 Bearer token 的 HTTP GET | [generic-agent-setup.md](examples/generic-agent-setup.md) |
 
 ## API 端点
 
-| 端点 | 说明 |
-|------|------|
-| `GET /health-snapshot?days=7` | 完整健康快照（训练/营养/身体/恢复/睡眠/HRV） |
+| 端点 | 说明 | 参数 |
+|------|------|------|
+| `GET /health-snapshot` | 全维度总览（训练/营养/身体/恢复/睡眠/HRV） | `days` (1-30) |
+| `GET /workouts` | 逐次训练 + 逐动作组数/重量/次数 | `days` (1-90), `limit` (1-50) |
+| `GET /nutrition` | 逐日营养 + 目标对比 + 达标率 | `days` (1-60) |
+| `GET /body` | 体重/体脂时间序列 + 目标计划 | `days` (1-365) |
+| `GET /recovery` | 每日状态/签到/训练前后回顾 | `days` (1-60) |
+| `GET /insights` | 训练频率/容量趋势/连续训练周 streak | 无 |
 
-更多端点即将推出。
+完整参数、响应结构与解读说明见 [SKILL.md](SKILL.md)。
 
 ## 数据来源
 

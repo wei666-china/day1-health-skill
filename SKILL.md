@@ -257,3 +257,9 @@ When presenting data to the user:
 - Some fields may be null if user hasn't tracked that metric
 - Sleep/HRV data requires Apple Watch
 - All timestamps are in user's local timezone
+
+## Platform-Specific Setup
+
+Step-by-step install guides for each agent live in the `examples/` folder:
+Cursor, Claude Code, Codex CLI, OpenClaw, and a generic guide for any other
+HTTP-capable agent. See the repo README for links.
